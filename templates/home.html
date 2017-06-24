@@ -1,0 +1,40 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+{#    <link href="{% static 'js/jquery.min.js' %}" rel='stylesheet' type='text/css' />#}
+    <style>
+        .left {
+            float: left;
+            width: 200px;
+            border: 1px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div width="800px">
+        <div class="left">
+            <div><a href="{% url 'add_article' %}">添加博客</a> </div>
+{#            <div><button id="delete">删除文章</button></div>#}
+        </div>
+        <div style="float: left">
+            <h>用户的博客的信息 </h><br/>
+            {% for article in article_list %}
+{#                <input type="checkbox" name="artile_name" value="{{ article.id }}"/>#}
+                <a href="{% url 'article' %}?article_id={{ article.id }}" target="_blank">{{ article.title }}</a><br/>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+</body>
+
+<script>
+
+</script>
+</html>

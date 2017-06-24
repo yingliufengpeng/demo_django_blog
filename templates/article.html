@@ -1,0 +1,96 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wangEditor.min.js' %}"></script>
+
+     <style type="text/css">
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <div>
+            <a href="{% url 'modify_article' %}?article_id={{ article_id }}">修改博客</a>
+            <a href="{% url 'article_ajax_delete' %}?article_id={{ article_id }}">删除博客</a>
+        </div>
+        <div>
+            <form id="form" action="{% url 'article_ajax_modify' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="article_id" value="{{ article_id }}">
+                <div id="div1" class="toolbar">
+                </div>
+                <div style="padding: 5px 0; color:#4C4A4A">
+                    标题<input type="text" id="title" name="title" disabled="disabled" placeholder="标题" required="required"/>
+        {#            标题{{ article_form.title }}#}
+
+                </div>
+
+                <!--可使用 min-height 实现编辑区域自动增加高度-->
+                <div id="div2" class="text">
+
+                </div>
+
+                <textarea id='content' name='content' style="display: none"></textarea>
+
+{#                <button id='button' type="button">提交</button>#}
+            </form>
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+    title = "{{ article.title }}"
+    content = '{{ article.content | safe }}'
+
+
+{#    # 提前加载我们需要的数据 #}
+    $(function(){
+
+        var E = window.wangEditor
+        var editor1 = new E('#div1', '#div2')  // 两个参数也可以传入 elem 对象，class 选择器
+        editor1.customConfig.uploadImgServer = '/upload_img/'  // 上传图片到服务器
+        editor1.customConfig.withCredentials = true
+        editor1.customConfig.uploadFileName = 'imgfile'
+        editor1.customConfig.menus = []
+        editor1.customConfig.uploadImgHooks = {
+            success: function (xhr, editor, result) {
+                console.log(result)
+        // 图片上传并返回结果，图片插入成功之后触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+            },
+        }
+
+        editor1.create()
+
+        $('#title').val(title)
+        $('#div2').empty()
+        $('#div2').append(content)
+
+    });
+
+
+
+    $('#button').click(function () {
+        list = ""
+        $('.w-e-text').children('p').each(function (i) {
+            list += "<p>" + this.innerHTML + "</p><br/>"
+        })
+
+        $('#content')[0].innerHTML = list
+        $('#form').submit()
+    })
+</script>
+</body>
+</html>
