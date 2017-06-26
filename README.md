@@ -30,4 +30,6 @@ django个人博客
 
 2, 登录的URL是  localhost:8000/login
 
+3, 家目录的URL是 localhost:8000/home
+
 
